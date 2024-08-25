@@ -10,7 +10,7 @@ import zod from "zod";
 const safeBody = zod.object({
   currency: zod.string(),
   phrase: zod.string().optional(),
-  index: zod.number().optional(),
+  index: zod.string().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -21,9 +21,8 @@ export async function POST(req: NextRequest) {
 
   const currency_temp = body.currency;
   let phrase = body.phrase;
-  let index;
+  let index = "0";
   if (body.index) index = body.index;
-  index = "0";
   const currency = currency_temp == "Solana" ? "501" : "60";
 
   if (phrase.length == 0) phrase = generateMnemonic();
@@ -41,12 +40,10 @@ export async function POST(req: NextRequest) {
     const secret = nacl.sign.keyPair.fromSeed(derivedSeed).secretKey;
     const publicKey = Keypair.fromSecretKey(secret).publicKey.toBase58();
 
-    console.log("Secret: ", bs58.encode(secret));
-    console.log("Public Key: ", publicKey);
     return NextResponse.json({
-      "publicKey": publicKey,
-      "secret": bs58.encode(secret),
-      "phrase": phrase
+      publicKey: publicKey,
+      secret: bs58.encode(secret),
+      phrase: phrase,
     });
   } catch (err) {
     console.log("error", err);

@@ -1,30 +1,21 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import axios from "axios";
+import generateWallet from "@/app/api/generate/generateWallet";
 import { useToast } from "./ui/use-toast";
+import { useRecoilState, useRecoilValue,useSetRecoilState } from "recoil";
+import { currency_atom, wallets_atom, phrase_atom } from "@/store/atoms";
 
 interface Wallet {
   publicKey: string;
   secret: string;
 }
 
-interface InputWithButtonProps {
-  currency: string;
-  setWallets: React.Dispatch<React.SetStateAction<Wallet[]>>;
-  phrase:string;
-  setPhrase: React.Dispatch<React.SetStateAction<string>>;
-}
-
-export function InputWithButton({
-  currency,
-  setWallets,
-  phrase,
-  setPhrase
-}: InputWithButtonProps) {
+export function InputWithButton() {
   const { toast } = useToast();
-  
+  const currency = useRecoilValue(currency_atom);
+  const setWallets = useSetRecoilState(wallets_atom);
+  const [phrase, setPhrase] = useRecoilState(phrase_atom);
 
   return (
     <div className="flex w-full items-center space-x-4">
@@ -46,6 +37,7 @@ export function InputWithButton({
             };
 
             setWallets((wallets) => [...wallets, wallet]);
+            setPhrase(response.phrase);
           }
         }}
         type="submit"
@@ -56,18 +48,4 @@ export function InputWithButton({
   );
 }
 
-async function generateWallet(phrase: string, currency: string, toast: any) {
-  try {
-    const response = await axios.post("http://localhost:3000/api/generate", {
-      phrase,
-      currency,
-    });
 
-    return response.data;
-  } catch (err) {
-    toast({
-      title: "Invalid Phrase",
-      description: "Please try again",
-    });
-  }
-}

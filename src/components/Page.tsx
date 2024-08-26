@@ -121,14 +121,14 @@ export default function Page() {
             className=" space-y-2 border-2 p-8 rounded-xl"
           >
             <div className="">
-              <div className="flex justify-between items-center my-4">
-                <div className="text-3xl font-bold">Your Secret Phrase</div>
-                <CollapsibleTrigger asChild>
+              <CollapsibleTrigger asChild>
+                <div className="flex justify-between items-center my-4">
+                  <div className="text-3xl font-bold">Your Secret Phrase</div>
                   <Button variant="ghost">
                     <FaChevronDown />
                   </Button>
-                </CollapsibleTrigger>
-              </div>
+                </div>
+              </CollapsibleTrigger>
 
               <CollapsibleContent
                 className="grid grid-cols-4 gap-2 hover:cursor-pointer"
